@@ -1,0 +1,1105 @@
+
+<div
+  class="app-content"
+  ng-app="dapp"
+  ng-controller="UserVesselDocumentEBDController"
+  ng-init="getAllExpiryList();getAllGroupList();"
+>
+  <div class="docubodyTitle">
+    <ul id="breadcrumb">
+      <li>
+        <a ui-sref="dapp.userVesselDocument">
+          <span class="icon icon-beaker"> </span> Vessel Documents</a
+        >
+      </li>
+      <li ng-show="libshipName != null">
+        <a href="javascript:void(0);">
+          <span class="icon icon-beaker"> </span> {{libshipName}}</a
+        >
+      </li>
+    </ul>
+  </div>
+  <div class="docuchainContent">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="docuuserdoculist">
+          <div class="tab" role="tabpanel">
+
+            <ul class="nav nav-tabs" role="tablist">
+              <li role="presentation" class="active">
+                <a
+                  ui-sref="dapp.userVesselDocumentEBD"
+                  aria-controls="home"
+                  role="tab"
+                  data-toggle="tab"
+                  >Expiry Based Document</a
+                >
+              </li>
+              <li role="presentation">
+                <a
+                  href="javascript:void(0);"
+                  aria-controls="profile"
+                  role="tab"
+                  data-toggle="tab"
+                  >Voyage Specific Document</a
+                >
+              </li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content tabs">
+              <div
+                role="tabpanel"
+                class="tab-pane fade in active"
+                id="Section1"
+              >
+                <div class="vessellistable">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="datatableEntry">
+                        <label
+                          >Show <input type="text" ng-model="itemsPerPage" />of
+                          <span>{{expiryDocumentHolderListLen}}</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="filtersearchoption" style="margin-left:-60px;">
+                        <div class="filterbox">
+                          <label>Filter by Document Status</label>
+                          <div class="filterselect" >
+                            <!-- ng-change="documentTypeFilter(selectStatus)" -->
+                            <select
+                              ng-model="selectStatus"
+                              ng-change="documentTypeFilter(selectStatus)"
+                            >
+                              <option value="">All</option>
+                              <option value="Active">Active</option>
+                              <option value="Renewal">Renewal</option>
+                              <option value="Expired">Expired</option>
+                              <option value="Missing">Missing</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="docuchainSearchbox" style="margin-top:-32px;">
+                          <div class="searchInput">
+                            <input
+                              type="text"
+                              placeholder="Search"
+                              ng-model="searchEBD"
+                            />
+                            <button
+                              type="button"
+                              class="searchIcon"
+                              ng-click="toasterCheck()"
+                            >
+                              <i class="fa fa-search" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+               <div class="row">
+                    <div class="col-lg-12 col-xs-12">
+                      <div class="taskMangeTable table-responsive" style="overflow-x: hidden;">
+                        <table class="table custom-modern-table" style="table-layout: fixed; width: 100%; margin-bottom: 0;">
+                          <thead>
+                            <tr style="font-size: 11px; text-transform: uppercase;">
+                              <th class="text-center" style="width: 4%;">
+                                <div class="clearcheckbox">
+                                  <label class="control control--checkbox">
+                                    <input
+                                      type="checkbox"
+                                      ng-model="checkall"
+                                      ng-click="checkUncheckAll(expiryDocumentHolderList)"
+                                    />
+                                    <div class="control__indicator"></div>
+                                  </label>
+                                </div>
+                              </th>
+                              <th style="width: 18%;" ng-click="orderByField='documentHolderName'; reverseSort = !reverseSort">
+                                <div class="th-content">CERTIFICATE<br/>NAME <i class="fa fa-sort"></i></div>
+                              </th>
+                              <th style="width: 12%;" ng-click="orderByField='certificateNumber'; reverseSort = !reverseSort">
+                                <div class="th-content">CERTIFICATE<br/>NO <i class="fa fa-sort"></i></div>
+                              </th>
+                              <th style="width: 14%;" ng-click="orderByField='issuingAuthority'; reverseSort = !reverseSort">
+                                <div class="th-content">ISSUING<br/>AUTHORITY <i class="fa fa-sort"></i></div>
+                              </th>
+                              <th style="width: 12%;" ng-click="orderByField='placeOfIssue'; reverseSort = !reverseSort">
+                                <div class="th-content">PLACE OF<br/>ISSUE <i class="fa fa-sort"></i></div>
+                              </th>
+                              <th style="width: 11%;" ng-click="orderByField='issueDateString'; reverseSort = !reverseSort">
+                                <div class="th-content">DATE OF<br/>ISSUE <i class="fa fa-sort"></i></div>
+                              </th>
+                              <th style="width: 11%;" ng-click="orderByField='expiryDateString'; reverseSort = !reverseSort">
+                                <div class="th-content">DATE OF<br/>EXPIRY <i class="fa fa-sort"></i></div>
+                              </th>
+                              <th class="text-center" style="width: 18%;">
+                                <div class="th-content justify-center">ACTIONS</div>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr
+                              dir-paginate="expiryDocument in expiryDocumentHolderListFileter|filter:searchEBD |itemsPerPage:itemsPerPage | orderBy:orderByField:reverseSort"
+                              current-page="currentPage"
+                            >
+                              <td class="text-center">
+                                <div class="clearcheckbox">
+                                  <label
+                                    class="control control--checkbox"
+                                    ng-show="expiryDocument.id"
+                                  >
+                                    <input
+                                      id="selectAll"
+                                      type="checkbox"
+                                      value="{{ expiryDocument }}"
+                                      ng-model="expiryDocument.checked"
+                                      ng-change="updateCheckall()"
+                                    />
+                                    <div class="control__indicator"></div>
+                                  </label>
+                                </div>
+                              </td>
+
+                              <td class="font-weight-medium text-wrap" style="word-break: break-word;">
+                                <img
+                                  class="ebd-image"
+                                  src="image/file-gray.png"
+                                  ng-show="!expiryDocument.statusColor"
+                                  style="margin-right: 6px; width: 16px;"
+                                />
+                                <img
+                                  class="ebd-image"
+                                  ng-src="image/file-{{expiryDocument.statusColor}}.png"
+                                  ng-show="expiryDocument.statusColor"
+                                  style="margin-right: 6px; width: 16px;"
+                                />
+                                {{expiryDocument.documentHolderName}}
+                              </td>
+
+                              <td style="word-break: break-word; font-size: 13px;">{{expiryDocument.certificateNumber}}</td>
+                              <td style="word-break: break-word; font-size: 13px;">{{expiryDocument.issuingAuthority}}</td>
+                              <td style="word-break: break-word; font-size: 13px;">{{expiryDocument.placeOfIssue}}</td>
+                              <td style="font-size: 13px;">{{expiryDocument.issueDateString}}</td>
+                              <td style="font-size: 13px;">{{expiryDocument.expiryDateString}}</td>
+
+                           <td class="text-center" style="display: flex;
+  justify-content: center;
+  align-items: center;">
+
+  <button
+    type="button"
+    class="modern-action-btn btn-view"
+    ng-disabled="!expiryDocument.id"
+    ng-class="{'opacity-50': !expiryDocument.id}"
+    tooltips
+    tooltip-template="View & Edit document"
+    data-toggle="modal"
+    data-target="{{expiryDocument.id ? '#viewEBD' : '#viewtasks'}}"
+    ng-click="expiryDocument.id ? viewExpiryDocumentInformation(expiryDocument) : null"
+    data-backdrop="static"
+  >
+    <i class="fa fa-eye" aria-hidden="true" ng-show="roleIdForView == 5"></i>
+    <i class="fa fa-pencil" aria-hidden="true" ng-show="roleIdForView != 5"></i>
+  </button>
+
+  <button
+    type="button"
+    class="modern-action-btn btn-upload"
+    tooltips
+    tooltip-template="Document upload"
+    ng-show="sessionObject.roleId!=5 && !expiryDocument.isDraft"
+    data-toggle="modal"
+    data-target="#fileupload"
+    ng-click="storeDocumentholder(expiryDocument)"
+    data-backdrop="static"
+  >
+    <i class="fa fa-upload" aria-hidden="true"></i>
+  </button>
+
+  <button
+    type="button"
+    class="modern-action-btn btn-edit"
+    tooltips
+    tooltip-template="Resume Draft"
+    ng-show="sessionObject.roleId!=5 && expiryDocument.isDraft"
+    ng-click="handleDraftClick(expiryDocument)"
+    data-backdrop="static"
+  >
+    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+  </button>
+
+  <a
+    class="modern-action-btn btn-download"
+    ng-disabled="!expiryDocument.id"
+    ng-class="{'opacity-50': !expiryDocument.id}"
+    tooltips
+    tooltip-template="Download document"
+    href="{{expiryDocument.id ? expiryDocument.documentDownloadUrl : 'javascript:void(0);'}}"
+    style="text-decoration: none;"
+  >
+    <i class="fa fa-download" aria-hidden="true"></i>
+  </a>
+
+  <button
+    type="button"
+    class="modern-action-btn btn-history"
+    ng-disabled="!expiryDocument.id"
+    ng-class="{'opacity-50': !expiryDocument.id}"
+    tooltips
+    tooltip-template="Document history"
+    data-toggle="modal"
+    data-target="#viewtasks"
+    ng-click="expiryDocument.id ? openHistoryPopup(expiryDocument) : null"
+    data-backdrop="static"
+  >
+    <i class="fa fa-history" aria-hidden="true"></i>
+  </button>
+
+  <button
+    type="button"
+    class="modern-action-btn btn-tag"
+    ng-disabled="!expiryDocument.id"
+    ng-class="{'opacity-50': !expiryDocument.id}"
+    tooltips
+    tooltip-template="Tag the document to group"
+    data-toggle="modal"
+    data-target="#tagGroupPopup"
+    ng-click="expiryDocument.id ? openGroupTagEBDPopup(expiryDocument, true) : null"
+    data-backdrop="static"
+  >
+    <i class="fa fa-tag" aria-hidden="true"></i>
+  </button>
+
+</td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                        <div class="text-center p-4 text-muted" ng-show="(expiryDocumentHolderList|filter:searchEBD).length==0 && fielterFailure!=0">
+                          <i class="fa fa-spinner fa-spin"></i> Loading placeholder...
+                        </div>
+                        <div class="text-center p-4 text-muted" ng-show="fielterFailure==0">
+                          No record found...
+                        </div>
+
+                      </div>
+
+                      <div class="vesselstablebottom">
+
+
+                        <div class="modern-sticky-actions">
+
+    <button type="button" class="modern-sticky-btn sticky-tag" ng-click="openGroupTagEBDPopup(expiryDocument)">
+        <i class="fa fa-tag" aria-hidden="true"></i>
+        <span class="sticky-text">Tag Selected</span>
+    </button>
+
+    <button type="button" class="modern-sticky-btn sticky-share" data-toggle="modal" data-backdrop="static" ng-click="sharePopup()">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+        <span class="sticky-text">Share</span>
+    </button>
+
+</div>
+
+                        <div class="pagination-info text-muted pull-left" style="margin-top: 10px; font-size: 12px;">
+                            Showing {{expiryDocumentHolderListFileter.length > 0 ? (itemsPerPage * (currentPage - 1) + 1) : 0}}
+                            to {{itemsPerPage * currentPage > expiryDocumentHolderListFileter.length ? expiryDocumentHolderListFileter.length : itemsPerPage * currentPage}}
+                            of {{expiryDocumentHolderListFileter.length}} entries
+                        </div>
+
+                        <dir-pagination-controls class="pull-right" direction-links="true" boundary-links="true"></dir-pagination-controls>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- View Document Pdf -->
+<div class="librariy-pdfview subscriptionPopup">
+    <div class="modal fade" id="viewExpiryDocument" role="dialog">
+      <div class="modal-dialog modal-lg" style="max-width: 1200px; width: 95%; margin-top: 60px !important; margin-bottom: 30px !important;">
+        <div class="modal-content" style="border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+
+          <div class="modal-header">
+            <h4 class="modal-title" style="margin: 0; font-weight: 600; text-transform: uppercase;">
+              DOCUMENT INFORMATION - {{viewDocumentObjectInfo.documentHolderName}}
+            </h4>
+            <button type="button" class="close" data-dismiss="modal" ng-click="closeViewPopup()">&times;</button>
+          </div>
+
+          <div class="modal-body" style="padding: 0; max-height: calc(100vh - 140px); overflow-y: auto; overflow-x: hidden;">
+            <div class="row" style="display: flex; flex-wrap: wrap; align-items: stretch; margin: 0;">
+
+              <div class="col-lg-7 col-md-6 col-sm-12" style="padding: 20px; display: flex; flex-direction: column;">
+                <h3 style="font-size: 15px; font-weight: 600; margin-top: 0; margin-bottom: 10px; text-transform: uppercase;">PDF View</h3>
+                <div style="flex-grow: 1; border: 1px solid #e2e8f0; border-radius: 4px; overflow: hidden; min-height: 550px;">
+                  <embed ng-src="{{viewDocumentUrl}}" width="100%" height="100%" style="min-height: 550px;" id="embedContainer" />
+                </div>
+              </div>
+
+              <div class="col-lg-5 col-md-6 col-sm-12 pdfborder" style="padding: 20px; border-left: 1px solid #e2e8f0;">
+                <h3 style="font-size: 16px; font-weight: 600; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-top: 0; margin-bottom: 15px;">Document Details</h3>
+
+                <form>
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Issuing Authority </label>
+                    <input type="text" class="text-box form-control" ng-model="issuingAuthorityEdit" style="height: 34px; font-size: 13px;" />
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Certificate No </label>
+                    <input type="text" class="text-box form-control" ng-model="certificateNumberEdit" style="height: 34px; font-size: 13px;" />
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Place of Issue </label>
+                    <input type="text" class="text-box form-control" ng-model="placeOfIssueEdit" style="height: 34px; font-size: 13px;" />
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Date of Issue </label>
+                    <div class="datepickerinput" moment-picker="issueDateStringEdit" format="DD-MM-YYYY" locale="en">
+                      <input class="text-box form-control" placeholder="dd-mm-yyyy" ng-model="issueDateStringEdit" style="height: 34px; font-size: 13px;">
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Date of expiry </label>
+                    <div class="datepickerinput" moment-picker="expiryDateStringEdit" format="DD-MM-YYYY" locale="en">
+                      <input class="text-box form-control" placeholder="dd-mm-yyyy" ng-model="expiryDateStringEdit" ng-model-options="{ updateOn: 'blur' }" style="height: 34px; font-size: 13px;">
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Last Annual </label>
+                    <div class="datepickerinput" moment-picker="lastAnnualStringEdit" format="DD-MM-YYYY" locale="en">
+                      <input class="text-box form-control" placeholder="dd-mm-yyyy" ng-model="lastAnnualStringEdit" ng-model-options="{ updateOn: 'blur' }" style="height: 34px; font-size: 13px;">
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Next annual </label>
+                    <div class="datepickerinput" moment-picker="nextAnnualStringEdit" format="DD-MM-YYYY" locale="en">
+                      <input class="text-box form-control" placeholder="dd-mm-yyyy" ng-model="nextAnnualStringEdit" ng-model-options="{ updateOn: 'blur' }" style="height: 34px; font-size: 13px;">
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Remarks </label>
+                    <textarea class="text-box form-control" ng-model="remarksEdit" style="height: 80px; padding: 10px; resize: vertical; font-size: 13px;"></textarea>
+                  </div>
+                </form>
+
+                <div class="modal-footer1 bttnGroup" ng-show="roleIdForView != 5" style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
+                  <button type="button" class="btn-modern clear-btn" data-dismiss="modal" ng-click="closeViewPopup()" style="margin: 0 !important;">
+                    <span class="btn-text">CANCEL</span>
+                  </button>
+                  <button type="submit" class="btn-modern update-btn" ng-click="updateExpiryDoc()" style="margin: 0 !important;">
+                    <span class="btn-text">UPDATE</span>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Create ExpiryDcoument -->
+<<div class="librariy-pdfview subscriptionPopup">
+    <div class="modal fade" id="createEBD" role="dialog">
+      <div class="modal-dialog modal-lg" style="max-width: 1200px; width: 95%; margin-top: 60px !important; margin-bottom: 30px !important;">
+        <div class="modal-content" style="border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+
+          <div class="modal-header">
+            <h4 class="modal-title" style="margin: 0; font-weight: 600; text-transform: uppercase;">
+              DOCUMENT INFORMATION - {{dcoumentHolderName}}
+            </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <div class="modal-body" style="padding: 0; position: relative; max-height: calc(100vh - 140px); overflow-y: auto; overflow-x: hidden;">
+
+            <div class="scan-overlay" ng-show="isScanning"
+                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                        background: rgba(255,255,255,0.8); z-index: 100; display: flex;
+                        flex-direction: column; align-items: center; justify-content: center;
+                        backdrop-filter: blur(2px); cursor: wait;">
+              <div id="cssload-loader">
+                <div class="cssload-dot"></div><div class="cssload-dot"></div>
+                <div class="cssload-dot"></div><div class="cssload-dot"></div>
+                <div class="cssload-dot"></div><div class="cssload-dot"></div>
+                <div class="cssload-dot"></div><div class="cssload-dot"></div>
+              </div>
+            </div>
+
+            <div class="row" style="display: flex; flex-wrap: wrap; align-items: stretch; margin: 0;">
+
+              <div class="col-lg-7 col-md-6 col-sm-12" style="padding: 20px; display: flex; flex-direction: column;">
+                <h3 style="font-size: 15px; font-weight: 600; margin-top: 0; margin-bottom: 10px; text-transform: uppercase;">PDF View</h3>
+                <div style="flex-grow: 1; border: 1px solid #e2e8f0; border-radius: 4px; overflow: hidden; min-height: 550px;">
+                  <embed ng-src="{{convertedFile}}" width="100%" height="100%" type="application/pdf" style="min-height: 550px;" />
+                </div>
+              </div>
+
+              <div class="col-lg-5 col-md-6 col-sm-12 pdfborder" style="padding: 20px; border-left: 1px solid #e2e8f0;">
+                <h3 style="font-size: 16px; font-weight: 600; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-top: 0; margin-bottom: 15px;">Document Details</h3>
+
+                <form name="libcreate" ng-submit="createDocument()">
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Issuing Authority </label>
+                    <input type="text" class="text-box form-control" ng-model="issuingAuthority" ng-readonly="isScanning" style="height: 34px; font-size: 13px;" />
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Certificate No </label>
+                    <input type="text" class="text-box form-control" ng-model="libcreate.certificateNumber" ng-readonly="isScanning" style="height: 34px; font-size: 13px;" />
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Place of Issue </label>
+                    <input type="text" class="text-box form-control" ng-model="libcreate.placeOfIssue" ng-readonly="isScanning" style="height: 34px; font-size: 13px;" />
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Date of Issue </label>
+                    <div class="datepickerinput" moment-picker="libcreate.dateOfIssue" format="DD-MM-YYYY" locale="en" ng-disabled="isScanning">
+                      <input class="text-box form-control" ng-model="libcreate.dateOfIssue" placeholder="dd-mm-yyyy" ng-readonly="isScanning" style="height: 34px; font-size: 13px;">
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Date of expiry </label>
+                    <div class="datepickerinput" moment-picker="libcreate.dateOfExpiry" format="DD-MM-YYYY" locale="en" ng-disabled="isScanning">
+                      <input class="text-box form-control" ng-model="libcreate.dateOfExpiry" placeholder="dd-mm-yyyy" ng-readonly="isScanning" style="height: 34px; font-size: 13px;">
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Last Annual </label>
+                    <div class="datepickerinput" moment-picker="libcreate.lastAnnual" format="DD-MM-YYYY" locale="en" ng-disabled="isScanning">
+                      <input class="text-box form-control" ng-model="libcreate.lastAnnual" placeholder="dd-mm-yyyy" ng-readonly="isScanning" style="height: 34px; font-size: 13px;">
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Next annual </label>
+                    <div class="datepickerinput" moment-picker="libcreate.nextAnnual" format="DD-MM-YYYY" locale="en" ng-disabled="isScanning">
+                      <input class="text-box form-control" ng-model="libcreate.nextAnnual" placeholder="dd-mm-yyyy" ng-readonly="isScanning" style="height: 34px; font-size: 13px;">
+                    </div>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; margin-bottom: 4px;"> Remarks </label>
+                    <textarea class="text-box form-control" ng-model="libcreate.remarks" ng-readonly="isScanning" placeholder="Enter remarks..." style="height: 80px; padding: 10px; resize: vertical; font-size: 13px;"></textarea>
+                  </div>
+
+                  <div class="modal-footer1 bttnGroup" style="display: flex; justify-content: space-between; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
+                    <button type="button" class="btn-modern draft-btn" style="background-color: #f8fafc; color: #475569; border-color: #cbd5e1; margin: 0 !important;" ng-disabled="isScanning" ng-click="saveAsDraft()">
+                      <span class="btn-text">SAVE DRAFT</span>
+                    </button>
+
+                    <button type="submit" class="btn-modern submit-btn" ng-disabled="libcreate.$invalid || isScanning" style="margin: 0 !important;">
+                      <span class="btn-text">
+                        <span ng-show="isScanning"><i class="fa fa-spinner fa-spin"></i> SCANNING...</span>
+                        <span ng-show="!isScanning">SUBMIT</span>
+                      </span>
+                    </button>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- upload File POPUP starts -->
+ <div class="uploadfile subscriptionPopup">
+    <div class="modal fade" id="fileupload" role="dialog">
+      <div class="modal-dialog" style="max-width: 500px; margin-top: 60px !important; margin-bottom: 30px !important;">
+        <div class="modal-content" style="border: none; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+
+          <div class="modal-header">
+            <h4 class="modal-title" style="margin: 0; font-weight: 600; text-transform: uppercase;">
+              UPLOAD FILE - {{dcoumentHolderName}}
+            </h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              ng-click="clearFileField()"
+            >
+              &times;
+            </button>
+          </div>
+
+          <div class="modal-body" style="padding: 20px; background: #f8fafc;">
+            <form
+              id="demo-upload"
+              ng-submit="uploadFile()"
+              name="fileUploadForm"
+            >
+
+              <div class="form-group" style="margin-bottom: 15px;">
+                <label style="font-size: 14px; font-weight: 600; color: #083b66; margin-bottom: 10px; display: block;">
+                  Select Document to Upload
+                </label>
+                <div style="background: #fff; border: 1px dashed #cbd5e1; padding: 15px; border-radius: 6px;">
+                  <input
+                    type="file"
+                    file-model="myFile"
+                    name="filename"
+                    id="filename"
+                    style="width: 100%; font-size: 13px;"
+                  />
+                </div>
+              </div>
+
+              <div ng-show="fileUploadForm.$submitted || fileUploadForm.filename.$touched">
+                <div
+                  ng-show="fileUploadForm.filename.$error.required"
+                  style="color: #ef4444; font-size: 13px; margin-top: 5px; font-weight: 500;"
+                >
+                  <i class="fa fa-exclamation-circle"></i> Please select a file to upload.
+                </div>
+              </div>
+
+              <div
+                ng-show="scanfail"
+                style="text-align: center; margin-top: 15px; padding: 10px; background: #fef2f2; border: 1px solid #fee2e2; border-radius: 4px;"
+              >
+                <span style="color: #ef4444; font-size: 13px; font-weight: 500;">
+                  <i class="fa fa-times-circle"></i> {{scanMsg}}
+                </span>
+              </div>
+
+              <div class="modal-footer1 bttnGroup" style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 25px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
+                <button
+                  type="button"
+                  class="btn-modern clear-btn"
+                  data-dismiss="modal"
+                  ng-click="clearFileField()"
+                  style="margin: 0 !important;"
+                >
+                  <span class="btn-text">CANCEL</span>
+                </button>
+                <button
+                  type="submit"
+                  class="btn-modern submit-btn"
+                  style="margin: 0 !important;"
+                >
+                  <span class="btn-text">SUBMIT</span>
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- upload File POPUP END -->
+
+  <!-- History POPUP starts -->
+  <!-- History -->
+<div class="historypop subscriptionPopup">
+    <div class="modal fade" id="historyEBD" role="dialog">
+      <div class="modal-dialog modal-lg" style="max-width: 900px; margin-top: 60px !important; margin-bottom: 30px !important;">
+        <div class="modal-content" style="border: none; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+
+          <div class="modal-header">
+            <h4 class="modal-title" style="margin: 0; font-weight: 600; text-transform: uppercase;">
+              HISTORY - {{historyEBDObject.documentHolderName}}
+            </h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <div class="modal-body" style="padding: 20px; background: #f8fafc;">
+            <div class="historybody table-responsive" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+              <table class="table custom-modern-table" style="width: 100%; margin-bottom: 0;">
+                <thead>
+                  <tr>
+                    <th><div class="th-content">Version</div></th>
+                    <th><div class="th-content">Uploaded By</div></th>
+                    <th><div class="th-content">Recent Actions</div></th>
+                    <th><div class="th-content">Date</div></th>
+                    <th><div class="th-content">Comment</div></th>
+                    <th class="text-center"><div class="th-content justify-center">Actions</div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    dir-paginate="docHistroy in documentHolderHistory|filter:searchHistroyEBD |itemsPerPage:itemsPerPageHistory"
+                    current-page="currentPage"
+                  >
+                    <td class="font-weight-medium">V{{$index + 1}}</td>
+                    <td>{{docHistroy.uploadedUserName}}</td>
+                    <td>{{docHistroy.approvedBy}}</td>
+                    <td class="timecount">
+                      {{docHistroy.modifiedDate}}
+                      <span class="time"></span>
+                    </td>
+                    <td style="max-width: 200px; white-space: normal; word-break: break-word;">{{docHistroy.remarks}}</td>
+                    <td class="text-center">
+                      <a
+                        class="modern-action-btn btn-view"
+                        tooltips
+                        tooltip-template="Download document"
+                        href="{{docHistroy.documentDownloadUrl}}"
+                        style="display: inline-flex; background-color: #e0f2fe; color: #0284c7; border-color: #bae6fd;"
+                      >
+                        <i class="fa fa-download" aria-hidden="true"></i>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="vesselstablebottom" style="margin-top: 15px;">
+              <dir-pagination-controls
+                max-size="5"
+                direction-links="true"
+                boundary-links="true"
+              ></dir-pagination-controls>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Share Popup -->
+<div class="shareview subscriptionPopup">
+    <div class="modal fade" id="sharepopup" role="dialog">
+      <div class="modal-dialog modal-lg" style="max-width: 1100px; margin-top: 60px !important; margin-bottom: 30px !important;">
+        <div class="modal-content" style="border: none; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+
+          <div class="modal-header">
+            <h4 class="modal-title" style="margin: 0; font-weight: 600; text-transform: uppercase;">
+              GROUP SHARE
+            </h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              ng-click="close()"
+            >
+              &times;
+            </button>
+          </div>
+
+          <div class="modal-body" style="padding: 20px; background: #f8fafc;">
+            <div class="sharetable">
+
+              <div class="searchshare" style="margin-bottom: 20px;">
+                <div class="searchInput bgwhiteinput" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                  <input
+                    type="text"
+                    placeholder="Group Name / Keyword / Email"
+                    ng-model="groupSearch"
+                    ng-keypress="$event.which === 13 && showTable()"
+                    style="border: none; height: 36px;"
+                  />
+                  <button
+                    type="button"
+                    class="searchIcon"
+                    ng-click="showTable()"
+                  >
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="sharetablefield row" ng-show="showgroup">
+                <div class="col-lg-12">
+                  <div class="sharet table-responsive" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;">
+                    <table class="table custom-modern-table" style="margin-bottom: 0;">
+                      <thead>
+                        <tr>
+                          <th><div class="th-content">Group Name</div></th>
+                          <th><div class="th-content">Keyword</div></th>
+                          <th><div class="th-content">Email Id</div></th>
+                          <th><div class="th-content justify-center">Action</div></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          dir-paginate="group in groupList|filter:groupSearch|itemsPerPage:5"
+                          pagination-id="groupPage"
+                        >
+                          <td class="font-weight-medium">{{group.groupName}}</td>
+                          <td>{{group.keyword}}</td>
+                          <td style="max-width: 250px; word-break: break-all; white-space: normal;">
+                            {{group.emailId}}
+                          </td>
+                          <td class="text-center">
+                            <button
+                              type="button"
+                              class="modern-action-btn btn-view"
+                              style="width: auto; padding: 4px 12px; border-radius: 4px;"
+                              ng-click="viewGroup(group)"
+                            >
+                              View
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="pull-right" style="margin-top: 10px;">
+                    <dir-pagination-controls
+                      max-size="5"
+                      pagination-id="groupPage"
+                      direction-links="true"
+                      boundary-links="true"
+                    ></dir-pagination-controls>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row" ng-show="createbutton" style="margin-top: 15px;">
+                <div class="col-lg-12">
+                  <div class="sharecreatenetbtn">
+                    <button
+                      type="button"
+                      class="btn-modern submit-btn"
+                      ng-click="ShowCreateGroup()"
+                    >
+                      <i class="fa fa-plus" style="margin-right: 8px;"></i> <span class="btn-text">CREATE GROUP</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sharenewfield" ng-show="IsVisible" style="margin-top: 20px; background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                <div class="sharefield">
+                  <form name="creategroupForm">
+                    <div class="row">
+                      <div class="col-lg-4 form-group">
+                        <label>Group Name <span style="color: Red">*</span></label>
+                        <input
+                          type="text"
+                          placeholder="Group Name"
+                          ng-model="groupName"
+                          custom-focus
+                          class="text-box form-control"
+                          required
+                        />
+                      </div>
+                      <div class="col-lg-4 form-group">
+                        <label>Keyword</label>
+                        <input
+                          type="text"
+                          placeholder="Keyword"
+                          ng-model="keyword"
+                          custom-focus
+                          class="text-box form-control"
+                          required
+                        />
+                      </div>
+                      <div class="col-lg-4 form-group">
+                        <label>Email Id <span style="color: Red">*</span></label>
+                        <input
+                          type="text"
+                          placeholder="Email Id"
+                          ng-model="group.emailId"
+                          custom-focus
+                          class="text-box form-control"
+                          name="Email"
+                          ng-pattern="/^((([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})),?)*$/"
+                          required
+                        />
+                        <span
+                          style="color: Red; font-size: 12px; margin-top: 4px; display: block;"
+                          ng-show="creategroupForm.Email.$dirty&&creategroupForm.Email.$error.pattern"
+                        >Please Enter Valid Email</span>
+                      </div>
+                    </div>
+
+                    <div class="row" ng-show="sessionObject.roleId !== '3'">
+                      <div class="col-lg-4 form-group" style="display: flex; align-items: center; height: 100%;">
+                        <div class="checbtn" style="display: flex; align-items: center; gap: 10px; margin-top: 15px;">
+                          <div class="sharecheckbox" style="margin: 0;">
+                            <div class="clearcheckbox">
+                              <label class="control control--checkbox" style="margin: 0;">
+                                <input
+                                  id="selectAll"
+                                  type="checkbox"
+                                  ng-model="shareToOtherShips"
+                                />
+                                <div class="control__indicator"></div>
+                              </label>
+                            </div>
+                          </div>
+                          <label style="margin: 0; font-weight: 600;">Create to other ships</label>
+                        </div>
+                      </div>
+
+                      <div class="col-lg-4" ng-show="shareToOtherShips">
+                        <div class="form-group">
+                          <label>Vessel Name <span style="color: Red">*</span></label>
+                          <div class="userMultiSelect">
+                            <div class="vesselType">
+                              <ui-select
+                                multiple
+                                ng-model="group.vesselSelectedList"
+                                custom-focus
+                                class="text-box form-control"
+                                style="height: auto; min-height: 34px; padding: 0;"
+                                theme="bootstrap"
+                                close-on-select="true"
+                                title="Choose a Vessel"
+                                remove-selected="false"
+                              >
+                                <ui-select-match placeholder="Select Vessel">{{$item.shipName}}</ui-select-match>
+                                <ui-select-choices repeat="user in vesselList | filter: $select.search | orderBy:'shipName'">
+                                  <div ng-bind-html="user.shipName"></div>
+                                  <small> IMO: {{user.officialNo}} </small>
+                                </ui-select-choices>
+                              </ui-select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <div class="shareselectDocument row" style="margin-top: 20px;">
+                <div class="col-lg-6">
+                  <div class="sharedocument" style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0; height: 100%;">
+                    <h1 style="font-size: 15px; font-weight: 600; color: #083b66; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-top: 0;">Selected Document</h1>
+                    <div
+                      class="sharecheckbox"
+                      ng-repeat="selecteddoc in selctedExpiredDocumentList"
+                      style="margin-top: 10px;"
+                    >
+                      <div class="clearcheckbox">
+                        <label
+                          class="control control--checkbox"
+                          ng-show="selecteddoc.id"
+                        >
+                          <input
+                            type="checkbox"
+                            ng-checked="true"
+                            ng-model="active"
+                            ng-click="selecetedCheckBoxValue(selecteddoc, active)"
+                          />
+                          <div class="control__indicator"></div>
+                          <span style="margin-left: 5px;">{{selecteddoc.documentHolderName}}</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-6">
+                  <div class="sharedocument" style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0; height: 100%;">
+                    <h1 style="font-size: 15px; font-weight: 600; color: #083b66; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-top: 0;">Existing Document</h1>
+                    <div class="sharescroll" style="max-height: 200px; overflow-y: auto; margin-top: 10px;">
+                      <div
+                        class="sharecheckbox"
+                        ng-repeat="expirydoc in groupExpiryDoclist"
+                        style="margin-bottom: 8px;"
+                      >
+                        <div class="clearcheckbox">
+                          <label
+                            class="control control--checkbox"
+                            ng-show="expirydoc.id"
+                          >
+                            <input
+                              id="selectAll"
+                              type="checkbox"
+                              value="{{expirydoc}}"
+                              ng-model="expirydoc.Selected"
+                              ng-checked="selectall"
+                            />
+                            <div class="control__indicator"></div>
+                            <span style="margin-left: 5px;">{{expirydoc.documentHolderName}}</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer1" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
+
+              <div class="checbtn" ng-show="showUpdateIngroupCheck" style="display: flex; align-items: center; gap: 10px;">
+                <div class="sharecheckbox" style="margin: 0;">
+                  <div class="clearcheckbox">
+                    <label class="control control--checkbox" style="margin: 0;">
+                      <input
+                        id="selectAll"
+                        type="checkbox"
+                        ng-model="updateInGroup"
+                      />
+                      <div class="control__indicator"></div>
+                    </label>
+                  </div>
+                </div>
+                <label style="margin: 0; font-weight: 600;">Update Group</label>
+              </div>
+
+              <div ng-show="!showUpdateIngroupCheck"></div>
+
+              <button
+                type="submit"
+                class="btn-modern submit-btn"
+                ng-click="shareexpirydocument(group)"
+                style="margin: 0 !important;"
+              >
+                <span class="btn-text">SEND</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Group Tag PopUp starts -->
+<div class="confplaceholder subscriptionPopup">
+    <div class="modal fade" id="tagGroupPopup" role="dialog">
+      <div class="modal-dialog" style="max-width: 500px; margin-top: 60px !important;">
+        <div class="modal-content" style="border: none; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+
+          <div class="modal-header">
+            <h4 class="modal-title" style="margin: 0; font-weight: 600; text-transform: uppercase;">
+              GROUP TAG
+            </h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              ng-click="clearTagDocumentFields()"
+            >
+              &times;
+            </button>
+          </div>
+
+          <div class="modal-body" style="padding: 20px; background: #f8fafc;">
+            <form name="groupTag" ng-submit="tagExpiryDocumentToGRoup()">
+              <div class="subscriptbody">
+                <div class="form">
+                  <div class="form-group">
+                    <label style="font-weight: 600; color: #083b66;">Select Group</label>
+                    <div class="vesselType">
+                      <select ng-model="gorupSelected" class="text-box form-control" style="width: 100%; height: 36px;" required>
+                        <option value="">-- Select group --</option>
+                        <option
+                          ng-repeat="group in groupListExpiry"
+                          value="{{group.id}}"
+                        >
+                          {{group.groupName}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer1 bttnGroup" style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 25px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
+                <button
+                  type="button"
+                  class="btn-modern clear-btn"
+                  data-dismiss="modal"
+                  ng-click="clearTagDocumentFields()"
+                  style="margin: 0 !important;"
+                >
+                  <span class="btn-text">CANCEL</span>
+                </button>
+                <button
+                  type="submit"
+                  class="btn-modern submit-btn"
+                  ng-disabled="groupTag.$invalid"
+                  style="margin: 0 !important;"
+                >
+                  <span class="btn-text">SUBMIT</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="deleteMessage">
+  <div class="modal fade" id="shareMail" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">GROUP SHARE - MAIL CONTENT</h4>
+          <button type="button" class="close" data-dismiss="modal">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="subject-mail">
+            <label>Subject</label>
+            <div class="form-group">
+              <input type="text" ng-model="libshipNameDoc" class="form-control" />
+            </div>
+          </div>
+          <div class="text-message">
+            <label>Message Content</label>
+
+             <textarea id="mailEditor" ng-model="expDocUrlshare" class="form-control" rows="4" style="resize:none;"> </textarea>
+          </div>
+        </div>
+        <div class="modal-footer" style="display:flex; justify-content:flex-end; padding:10px 15px;">
+
+
+          <button
+                  type="submit"
+                  class="btn-modern submit-btn"
+                  ng-click="submitEmailRequest()"
+                >
+                  <span class="btn-text">SUBMIT</span>
+                  <span class="icon-circle">
+                    <i class="fa fa-check"></i>
+                  </span>
+                </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Group Tag PopUp Ends -->
+    <div class="preloader" ng-show="loader">
+      <div id="cssload-loader">
+        <div class="cssload-dot"></div>
+        <div class="cssload-dot"></div>
+        <div class="cssload-dot"></div>
+        <div class="cssload-dot"></div>
+        <div class="cssload-dot"></div>
+        <div class="cssload-dot"></div>
+        <div class="cssload-dot"></div>
+        <div class="cssload-dot"></div>
+      </div>
+    </div>
+  </div>
+</div>
+

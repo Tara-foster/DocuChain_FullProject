@@ -1,0 +1,71 @@
+<header class="docuchain-app-header">
+  <a
+    class="docuchain-sidebar-toggle"
+    href="javascript:void(0);"
+    ng-click="sidebarActiveFun()"
+  ></a>
+  <div class="toggleoption" id="toggleoption">
+    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+  </div>
+
+  <ul class="docuchain-app-nav">
+    <li
+      class="app-nav__item theme-toggle-btn"
+      ng-click="toggleTheme()"
+      title="Toggle Dark/Light Mode"
+    >
+      <i class="fa" ng-class="isDarkMode ? 'fa-sun-o' : 'fa-moon-o'"></i>
+    </li>
+
+    <li class="dropdown">
+      <div class="profile-card-wrapper dropdown-toggle" data-toggle="dropdown">
+        <div class="profile-avatar-circle">
+          <img
+            ng-src="{{sessionObject.profilePicture || 'image/avatarimg.jpg'}}"
+            class="profile-img-fluid"
+            alt="User"
+          />
+
+          <span
+            ng-if="!sessionObject.profilePicture && !sessionObject.firstName"
+            class="profile-letter"
+          >
+            {{sessionObject.firstName.charAt(0)}}
+          </span>
+        </div>
+        <div class="profile-text-container">
+          <div class="profile-user-name">
+            {{sessionObject.firstName}} {{sessionObject.lastName}}
+          </div>
+          <div class="profile-user-role">{{sessionObject.role}}</div>
+        </div>
+      </div>
+
+      <ul class="dropdown-menu dropdown-menu-right profile-dropdown-box">
+        <li>
+          <a href="javascript:void(0)" ng-click="userDetails()">
+            <i class="fa fa-user"></i> Profile
+          </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a href="javascript:void(0)" ng-click="confirmLogout()">
+            <i class="fa fa-sign-out"></i> Logout
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <div class="doculogo">
+    <a href="javascript:void(0);">
+      <img
+        ng-src="{{ isDarkMode ? 'image/DocuChain-dark.png' : 'image/DocuChain-Light.png' }}"
+      />
+    </a>
+  </div>
+</header>
+<!-- <toaster-container
+  toaster-options="{'time-out': 3000,'animation-class':'toaster-top-center'}"
+  class="toaster-top-center"
+></toaster-container> -->

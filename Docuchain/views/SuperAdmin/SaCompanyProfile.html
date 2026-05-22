@@ -1,0 +1,214 @@
+<div
+  class="app-content"
+  ng-app="dapp"
+  ng-controller="SaCompanyProfileController"
+  ng-init="organizationList()"
+>
+  <div class="docubodyTitle">
+    <ul id="breadcrumb">
+      <li>
+        <a ui-sref="dapp.saCompanyProfile">
+          <span class="icon icon-beaker"> </span> Manage Organization</a
+        >
+      </li>
+    </ul>
+    <div class="bttnGroup">
+      <a ui-sref="dapp.saCompanyProfilecreate" class="addNew">
+        <img src="image/createnewIcon.png" />Create Organization</a
+      >
+    </div>
+  </div>
+
+  <div class="docuContent">
+    <div class="manageOrganization vesslesDocumentsTable">
+      <div class="row" style="margin-bottom: 5px">
+        <div class="col-lg-6 col-md-6">
+          <div class="datatableEntry">
+            <label
+              >Show
+              <input
+                type="text"
+                ng-model="itemsPerPage"
+                style="width: 40px; height: 30px"
+              />
+              of <span>{{allOrganizationList.length}}</span></label
+            >
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6">
+          <div class="docuchainSearchbox">
+            <div class="searchInput">
+              <input
+                type="text"
+                placeholder="Search..."
+                ng-model="organizationsearch"
+                style="height: 30px"
+              />
+              <button type="button" class="searchIcon">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="docuadmin-table table-responsive">
+            <table class="table custom-modern-table">
+              <thead>
+                <tr>
+                  <th
+                    ng-click="orderByField='organizationName'; reverseSort = !reverseSort"
+                  >
+                    <div class="th-content">
+                      Company<br />Name <i class="fa fa-sort"></i>
+                    </div>
+                  </th>
+                  <th
+                    ng-click="orderByField='registrationNumber'; reverseSort = !reverseSort"
+                  >
+                    <div class="th-content">
+                      Registration<br />Number <i class="fa fa-sort"></i>
+                    </div>
+                  </th>
+                  <th
+                    ng-click="orderByField='contactPersonName'; reverseSort = !reverseSort"
+                  >
+                    <div class="th-content">
+                      Contact<br />Person <i class="fa fa-sort"></i>
+                    </div>
+                  </th>
+                  <th
+                    ng-click="orderByField='emailId'; reverseSort = !reverseSort"
+                  >
+                    <div class="th-content">
+                      Email<br />Address <i class="fa fa-sort"></i>
+                    </div>
+                  </th>
+                  <th
+                    ng-click="orderByField='phoneNumber'; reverseSort = !reverseSort"
+                  >
+                    <div class="th-content">
+                      Phone<br />Number <i class="fa fa-sort"></i>
+                    </div>
+                  </th>
+                  <th class="text-center">
+                    <div class="th-content">Doc<br />Approval</div>
+                  </th>
+                  <th class="text-center">
+                    <div class="th-content">Org<br />Status</div>
+                  </th>
+                  <th class="text-center">
+                    <div class="th-content">Save in<br />Blockchain</div>
+                  </th>
+                  <th class="text-center" style="min-width: 100px">
+                    <div class="th-content">Action</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  dir-paginate="organization in fData = (allOrganizationList | orderBy:'organizationName' | filter:organizationsearch) | itemsPerPage:itemsPerPage | orderBy:orderByField:reverseSort"
+                  current-page="currentPage"
+                >
+                  <td>{{organization.organizationName}}</td>
+                  <td class="text-muted">
+                    {{organization.registrationNumber}}
+                  </td>
+                  <td>{{organization.contactPersonName}}</td>
+                  <td>{{organization.emailId}}</td>
+                  <td>{{organization.phoneNumber}}</td>
+                  <td class="text-center">
+                    <input
+                      type="checkbox"
+                      class="modern-toggle"
+                      ng-checked="{{organization.isDualApprovalActive}}"
+                      ng-click="changeOrgDualApprovel(organization)"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <input
+                      type="checkbox"
+                      class="modern-toggle"
+                      ng-checked="{{organization.isStatusActive}}"
+                      ng-click="changeStatusOrganization(organization)"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <input
+                      type="checkbox"
+                      class="modern-toggle"
+                      ng-checked="{{organization.isSaveInBlockchain}}"
+                      ng-click="changeSaveInBlockchain(organization)"
+                    />
+                  </td>
+                  <td class="text-center" style="white-space: nowrap">
+                    <button
+                      type="button"
+                      class="modern-action-btn btn-view"
+                      title="View"
+                      ng-click="viewOrganizationById(organization)"
+                    >
+                      <i class="fa fa-eye"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="modern-action-btn btn-edit"
+                      title="Edit"
+                      ng-click="getUpdateId(organization)"
+                    >
+                      <i class="fa fa-pencil"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="modern-action-btn btn-delete"
+                      title="Delete"
+                      ng-click="confirmDeleteOrganization(organization.organizationId)"
+                    >
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr ng-show="fData.length == 0">
+                  <td colspan="9" class="text-center p-3">No records found.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ul class="pagination pull-right" style="margin-top: 5px">
+            <dir-pagination-controls
+              max-size="5"
+              direction-links="true"
+              boundary-links="true"
+              ng-show="allOrganizationList.length != 0"
+            ></dir-pagination-controls>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="preloader" ng-show="loader">
+    <div id="cssload-loader">
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+    </div>
+  </div>
+  <!-- <toaster-container
+    toaster-options="{'position-class': 'toast-custom-right', 'close-button': false, 'time-out': 5000}"
+  >
+  </toaster-container> -->
+  <toaster-container
+  toaster-options="{'position-class': 'toast-custom-right', 'close-button': false, 'time-out': 2000, 'progress-bar': false}"
+>
+</toaster-container>
+</div>
+</div>

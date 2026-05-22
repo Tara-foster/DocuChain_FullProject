@@ -1,0 +1,101 @@
+<header class="docuchain-app-header" ng-controller="AdminHeaderController">
+  <a class="docuchain-sidebar-toggle" ng-click="sidebarActiveFun()"></a>
+
+  <div class="toggleoption" id="toggleoption">
+    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+  </div>
+
+  <ul class="docuchain-app-nav">
+    <li
+      class="app-nav__item theme-toggle-btn"
+      ng-click="toggleTheme()"
+      title="Toggle Dark/Light Mode"
+    >
+      <i class="fa" ng-class="isDarkMode ? 'fa-sun-o' : 'fa-moon-o'"></i>
+    </li>
+
+    <li class="dropdown">
+      <a
+        class="app-nav__item animated infinite swing"
+        href="javascript:void(0)"
+        aria-label="Show notifications"
+        ng-show="notificationCountList.length >= 0"
+        ng-click="notification()"
+      >
+        <img src="image/notification.png" alt="notification" />
+        <span ng-show="notificationCountList.length > 0"
+          >{{notificationCountList.length }}</span
+        >
+      </a>
+      <ul class="app-notification dropdown-menu dropdown-menu-right">
+        <li class="app-notification__title">Notifications</li>
+        <div
+          class="app-notification__content"
+          ng-repeat="list in notificationListFielter | limitTo:5"
+        >
+          <li ng-click="notification()">
+            <a class="app-notification__item" href="javascript:void(0);">
+              <div>
+                <p class="app-notification__message">
+                  {{list.notificationName}}
+                </p>
+                <p class="app-notification__meta">{{list.notifiedOn}}</p>
+              </div>
+            </a>
+          </li>
+        </div>
+        <li class="app-notification__footer">
+          <a href="" ng-click="notification()">See all Notifications.</a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="dropdown">
+      <div class="profile-card-wrapper dropdown-toggle" data-toggle="dropdown">
+        <div class="profile-avatar-circle">
+          <img
+            ng-if="sessionObject.profilePicture"
+            ng-src="{{sessionObject.profilePicture}}"
+            onerror="this.src = 'image/avatarimg.jpg'"
+            class="profile-img-fluid"
+            alt="User"
+          />
+          <img
+            ng-if="!sessionObject.profilePicture"
+            src="image/avatarimg.jpg"
+            class="profile-img-fluid"
+            alt="Default Avatar"
+          />
+        </div>
+        <div class="profile-text-container">
+          <div class="profile-user-name">
+            {{sessionObject.userName || sessionObject.firstName}}
+          </div>
+          <div class="profile-user-role">{{sessionObject.role}}</div>
+        </div>
+      </div>
+
+      <ul class="dropdown-menu dropdown-menu-right profile-dropdown-box">
+        <li>
+          <a href="javascript:void(0)" ng-click="userDetails()">
+            <i class="fa fa-user"></i> Profile
+          </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a href="javascript:void(0)" ng-click="confirmLogout()">
+            <i class="fa fa-sign-out"></i> Logout
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <div class="doculogo">
+    <a href="javascript:void(0);">
+      <img
+        ng-src="{{ isDarkMode ? 'image/DocuChain-dark.png' : 'image/DocuChain-Light.png' }}"
+      />
+    </a>
+  </div>
+</header>

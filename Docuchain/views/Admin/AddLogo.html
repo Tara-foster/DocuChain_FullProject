@@ -1,0 +1,82 @@
+<div class="app-content">
+  <div class="docubodyTitle">
+    <ul id="breadcrumb">
+      <li>
+        <a ng-click="userDetails()">
+          <span class="icon icon-beaker"> </span> System Configuration
+        </a>
+      </li>
+      <li>
+        <a href="javascript:void(0);">Add Logo</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="docuContent">
+    <div class="logo-upload-card">
+      <div class="logo-row">
+        <div class="logo-preview-section">
+          <label class="section-label">Logo Preview</label>
+          <div class="logo-preview-box">
+            <img
+              ng-show="!thumbnail.dataUrl"
+              src="image/imageUpload.png"
+              class="placeholder-img"
+            />
+            <img
+              ng-show="thumbnail.dataUrl"
+              ng-src="{{ thumbnail.dataUrl }}"
+              class="preview-img"
+            />
+          </div>
+        </div>
+
+        <div class="logo-controls-section">
+          <div class="form-group">
+            <label class="section-label">Select New File</label>
+            <div class="custom-file-input-wrapper">
+              <input
+                type="file"
+                class="file-input-field"
+                onchange="angular.element(this).scope().uploadFile(this.files)"
+                name="file"
+                file-input="files"
+                ng-model="sessionObject.profilePictures"
+              />
+              <span class="error-text" id="sizeOffile"></span>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button
+              type="button"
+              class="btn-modern update-btn"
+              ng-click="addLogoFunction()"
+            >
+              <span class="btn-text">UPDATE </span>
+              <!-- <span class="icon-circle">
+                <i class="fa fa-refresh"></i>
+              </span> -->
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="preloader" ng-show="loader">
+    <div id="cssload-loader">
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+      <div class="cssload-dot"></div>
+    </div>
+  </div>
+  <toaster-container
+    toaster-options="{'position-class': 'toast-custom-right', 'close-button': true, 'time-out': 5000}"
+  ></toaster-container>
+</div>

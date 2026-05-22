@@ -1,0 +1,43 @@
+<aside
+  class="app-sidebar"
+  ng-app="dapp"
+  ng-controller="UserDashboardController"
+>
+  <div class="sidebar-logo-container">
+    <a href="javascript:void(0);" ui-sref="dapp.userDashboard">
+      <img
+        ng-src="{{logoPath || 'image/Sealedger- light.png'}}"
+        alt="Logo"
+        class="sidebar-main-logo"
+      />
+    </a>
+  </div>
+
+  <ul class="app-menu">
+    <li
+      ng-repeat="data in sidebarList"
+      ui-sref-active="active"
+      ng-click="clearFilterAndGo(data.url)"
+    >
+      <a class="app-menu__item" ui-sref="{{data.url}}" style="cursor: pointer">
+        <i class="{{data.icon}} menu-icon"></i>
+        <span class="app-menu__label">{{data.name}}</span>
+      </a>
+    </li>
+  </ul>
+
+  <ul class="appstore">
+    <li>
+      <a
+        href="https://play.google.com/store/apps/details?id=com.docu.chain.dms"
+        target="_blank"
+        ><img src="image/googleplay.png" alt="googleplay"
+      /></a>
+    </li>
+    <li>
+      <a href="#" target="_blank"
+        ><img src="image/appstore.png" alt="appstore"
+      /></a>
+    </li>
+  </ul>
+</aside>
